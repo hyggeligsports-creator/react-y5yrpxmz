@@ -1,4 +1,4 @@
-import React from "react";import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 // ═══════════════════════════════════════════
 // 定数・データ定義
@@ -315,10 +315,15 @@ function genPlan(ans) {
 // ═══════════════════════════════════════════
 
 function Inp({ label, value, onChange, placeholder, type="text" }) {
+  const composing = React.useRef(false);
   return (
     <div>
       <div style={{color:C.sub, fontSize:13, fontWeight:600, marginBottom:6}}>{label}</div>
-      <input type={type} value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder||""}
+      <input type={type} value={value}
+        onChange={e=>{ if (!composing.current) onChange(e.target.value); }}
+        onCompositionStart={()=>{ composing.current = true; }}
+        onCompositionEnd={e=>{ composing.current = false; onChange(e.target.value); }}
+        placeholder={placeholder||""}
         style={{width:"100%", background:"#FAFAFA", border:`1.5px solid ${C.border}`, borderRadius:8,
           padding:"10px 14px", color:C.text, fontSize:14, outline:"none", boxSizing:"border-box"}}/>
     </div>
@@ -326,10 +331,15 @@ function Inp({ label, value, onChange, placeholder, type="text" }) {
 }
 
 function Tex({ label, value, onChange, placeholder, rows=3 }) {
+  const composing = React.useRef(false);
   return (
     <div>
       <div style={{color:C.sub, fontSize:13, fontWeight:600, marginBottom:6}}>{label}</div>
-      <textarea value={value} onChange={e=>onChange(e.target.value)} placeholder={placeholder||""} rows={rows}
+      <textarea value={value}
+        onChange={e=>{ if (!composing.current) onChange(e.target.value); }}
+        onCompositionStart={()=>{ composing.current = true; }}
+        onCompositionEnd={e=>{ composing.current = false; onChange(e.target.value); }}
+        placeholder={placeholder||""} rows={rows}
         style={{width:"100%", background:"#FAFAFA", border:`1.5px solid ${C.border}`, borderRadius:8,
           padding:"10px 14px", color:C.text, fontSize:14, outline:"none", resize:"vertical", boxSizing:"border-box"}}/>
     </div>
